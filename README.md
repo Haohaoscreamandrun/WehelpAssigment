@@ -19,4 +19,4 @@
 [Curriculum Vitae](https://haohaoscreamandrun.github.io/CV) 
 
 ![Choice](./choice.jpg)
->> "我們怎麼判斷一個人活得好不好?最簡單的判斷標準是：看這個人活得有沒有選擇。" - 蔡康永《因為這是你的人生》
+> "我們怎麼判斷一個人活得好不好?最簡單的判斷標準是：看這個人活得有沒有選擇。" - 蔡康永《因為這是你的人生》
