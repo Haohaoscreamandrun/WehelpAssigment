@@ -1,11 +1,12 @@
 # Wehelp Weekly Assignment
 
 *This page dedicates to the submission of weekly assignment*
+
 **All rights are preserved by [Padax ,ltd.](https://wehelp.tw/)**
 
 ## Assignment List
 ### Semester 1 (8 weeks)
-1. Week 1 - [RWD practice](https://haohaoscreamandrun.github.io/WehelpAssignment/RWD)
+1. Week 1 - [RWD practice](https://haohaoscreamandrun.github.io/WehelpAssignment/01RWD/RWD)
 2. Week 2 - [Basics of JavaScript & Python]()
 3. Week 3 - [Net connection of JavaScript & Python]()
 4. Week 4 - [FastAPI]()
