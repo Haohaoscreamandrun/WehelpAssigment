@@ -1,8 +1,7 @@
 # Wehelp Weekly Assignment
 
-*This page dedicates to the submission of weekly assignment*
-
-**All rights are preserved by [Padax ,ltd.](https://wehelp.tw/)**
+* *This page dedicates to the submission of weekly assignment*
+* **All rights are preserved by [Padax ,ltd.](https://wehelp.tw/)**
 
 ## Assignment List
 ### Semester 1 (8 weeks)
