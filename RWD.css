@@ -1,16 +1,23 @@
 body{
+  margin: 0;
   font-size: 20px;
 }
 
 .navbar
 {
   display: flex;
+  width: 100%;
+  height: 3rem;
+  position: fixed;
+  background-color: white;
+  z-index: 100;
 }
 
 .left-nav
 {
+  flex: none;
   width: 30%;
-  height: 40px;
+  margin-left: 10px;
   display: flex;
   align-items: center;
 }
@@ -22,8 +29,9 @@ body{
 
 .right-nav
 {
-  width: 70%;
-  height: 40px;
+  flex: auto;
+  
+  margin-right: 10px;
   display: flex;
   justify-content: end;
   align-items: center;
@@ -31,7 +39,89 @@ body{
 
 .nav-item
 {
-  padding-left: 10px;
+  flex: none;
+  padding: 5px;
+  margin-left: 20px;
+}
+
+.nav-item:hover,
+.side-bar-item:hover,
+button:hover
+{
+  color: azure;
+  background-color: gray;
+  transition: 0.3s;
+  border-radius: 10%;
+  cursor: pointer;
+}
+
+.burger-icon
+{
+  /*background-image: url("./nav_icon.png");
+  background-position: center;
+  background-size: contain; */
+  display: none;
+  max-height: 40px;
+  max-width: 40px;
+  margin-right: 5px;
+}
+
+.side-bar
+{
+  position: fixed;
+  top: 0;
+  right: -50vw; /*put it outside the viewport*/
+  height: 100vh;
+  width: 40vw;
+  transition: 0.3s ease-in-out;
+
+  background-color: rgba(255, 255, 255, 0.526);
+  backdrop-filter: blur(10px);
+  z-index: 101;
+  box-shadow: -10px 0 10px rgba(0, 0, 0, 0.1);
+  /* offset-x | offset-y | blur-radius | color */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.side-bar.active
+{
+  right: 0;
+  transition: 0.3s ease-in-out;
+}
+
+.close-icon
+{
+  align-self: end;
+  max-height: 40px;
+  margin: 5px 15px 0 0;
+}
+
+.side-bar-item
+{
+  flex: none;
+  margin: 5px 0;
+  padding: 5px;
+}
+
+button
+{
+  background-color: inherit;
+  border: none;
+  padding: 0;
+}
+
+img
+{
+  height: 100%;
+  width: 100%;
+  object-fit: contain;
+}
+
+.nav-flow /*the div to occupy the navbar space*/
+{
+  height: 3rem;
 }
 
 .welcome-bar
@@ -54,6 +144,7 @@ body{
 
 .main-content
 {
+  margin-bottom: 25vh;
   /*display: flex;
   justify-content: center;
   flex-wrap: wrap;*/
@@ -200,4 +291,43 @@ body{
   {
     grid-column: span 2;
   }
+}
+
+@media screen and (min-width:360px) and (max-width:600px) {
+  .promotions {
+      width: 90%;
+  
+      grid-template-columns: 1fr;
+      grid-template-rows: 1fr 1fr 1fr;
+    }
+  
+    .promotion:nth-child(3) {
+      grid-column: span 1;
+    }
+  
+    .titles {
+      width: 90%;
+  
+      grid-template-columns: 1fr;
+      grid-template-rows: repeat(10, 1fr);
+    }
+
+    .title:nth-child(1),
+    .title:nth-child(6),
+    .title:nth-child(9),
+    .title:nth-child(10) {
+      grid-column: span 1;
+    }
+
+    .nav-item
+    {
+      display: none;
+    }
+
+    .burger-icon
+    {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
 }
