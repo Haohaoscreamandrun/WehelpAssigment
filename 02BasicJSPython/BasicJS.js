@@ -103,22 +103,40 @@ for (let i = 1; i <= duration; i++){
   hour++
 }
 // compare to current office hour
-let available = []
+var available = []
 status.map(data => {
   // cond 1: no scheduled office hour
   if(!data[3]){
     available.push(data[0]) 
   // cond 2: has schedule, check if conflict
   }else{
-    for(let i=0;i<inquireTime.length;i++){
+    let noConflict = true
+    for(let i=0; i < inquireTime.length; i++){
       // if not, push the name
-      if(!data[3].includes(inquireTime[i])){available.push(data[0])}
+      if(data[3].includes(inquireTime[i])){noConflict = false}
     }
+    noConflict ? available.push(data[0]) : available
   }
 }
 )
-//
-
+// decide the consultant base on criteria
+let compare = []
+status.map((data) =>{
+  if(available.includes(data[0])){
+    compare.push(criteria === 'rate' ? data[1] : data[2])
+  }
+})
+let Index = criteria === 'rate'? compare.indexOf(Math.max(...compare)) : compare.indexOf(Math.min(...compare))
+let chosen = available[Index]? available[Index] : 'No Service'
+// Book the office hour
+consultants.map(data =>{
+  if(data['name'] === chosen && data['officeHour'] === undefined){
+    data['officeHour'] = inquireTime
+  }else if(data['name'] === chosen && data['officeHour'] !== undefined){
+    data['officeHour'] = data['officeHour'].concat(inquireTime)
+  }
+})
+console.log(chosen)
 }
 const consultants=[
 {"name":"John", "rate":4.5, "price":1000},
@@ -132,3 +150,5 @@ book(consultants, 20, 2, "rate"); // John
 book(consultants, 11, 1, "rate"); // Bob
 book(consultants, 11, 2, "rate"); // No Service
 book(consultants, 14, 3, "price"); // John
+
+// Modify in place of const consultants
