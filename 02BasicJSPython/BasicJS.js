@@ -152,3 +152,28 @@ book(consultants, 11, 2, "rate"); // No Service
 book(consultants, 14, 3, "price"); // John
 
 // Modify in place of const consultants
+
+// Task 3
+function func(...data){
+// your code here
+// Take all middlename out in to an array
+let middleName = []
+data.map(names =>{
+  if(names.length === 2 || names.length === 3){
+    middleName.push(names[1])
+   }else if(names.length === 4 || names.length === 5){
+    middleName.push(names[2])
+  }
+})
+// find the unique one
+let uniqueMiddle = middleName.filter((element,index,array) => {
+  return array.indexOf(element) === array.lastIndexOf(element)
+})
+// return the unique middlename
+let uniqueName = data[middleName.indexOf(...uniqueMiddle)]? data[middleName.indexOf(...uniqueMiddle)] : '沒有'
+console.log(uniqueName)
+}
+func("彭大牆", "陳王明雅", "吳明"); // print 彭大牆
+func("郭靜雅", "王立強", "郭林靜宜", "郭立恆", "林花花"); // print 林花花
+func("郭宣雅", "林靜宜", "郭宣恆", "林靜花"); // print 沒有
+func("郭宣雅", "夏曼藍波安", "郭宣恆"); // print 夏曼藍波安
