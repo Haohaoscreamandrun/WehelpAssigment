@@ -85,3 +85,50 @@ findAndPrint(messages,"Xindian City Hall"); // print Vivian
 // Can print names locate at different stations with same distance from currentStation.
 // Can handle currentStation which's on Xiaobitan Line
 
+// Task 2
+// your code here, maybe
+
+function book(consultants, hour, duration, criteria){
+// your code here
+// sort data
+let status = []
+for (let i = 0; i < consultants.length; i++){
+  status[i] = Object.values(consultants[i])
+}
+// confirmation of time slot
+// inquired time
+let inquireTime = []
+for (let i = 1; i <= duration; i++){
+  inquireTime.push(hour)
+  hour++
+}
+// compare to current office hour
+let available = []
+status.map(data => {
+  // cond 1: no scheduled office hour
+  if(!data[3]){
+    available.push(data[0]) 
+  // cond 2: has schedule, check if conflict
+  }else{
+    for(let i=0;i<inquireTime.length;i++){
+      // if not, push the name
+      if(!data[3].includes(inquireTime[i])){available.push(data[0])}
+    }
+  }
+}
+)
+//
+
+}
+const consultants=[
+{"name":"John", "rate":4.5, "price":1000},
+{"name":"Bob", "rate":3, "price":1200},
+{"name":"Jenny", "rate":3.8, "price":800}
+];
+book(consultants, 15, 1, "price"); // Jenny
+book(consultants, 11, 2, "price"); // Jenny
+book(consultants, 10, 2, "price"); // John
+book(consultants, 20, 2, "rate"); // John
+book(consultants, 11, 1, "rate"); // Bob
+book(consultants, 11, 2, "rate"); // No Service
+book(consultants, 14, 3, "price"); // John
