@@ -53,17 +53,14 @@ def find_and_print(messages, current_station):
         elif current_station in xiaobitan_line:
             if station in green_line:
                 # cond 1: station on green_line, current-Qizhang-station
-                distance[name] = xiaobitan_line[current_station] + \
-                    abs(green_line['Qizhang'] - green_line[station])
+                distance[name] = xiaobitan_line[current_station] + abs(green_line['Qizhang'] - green_line[station])
             else:
                 # cond 2: station not on green_line
-                distance[name] = abs(
-                    xiaobitan_line[station] - xiaobitan_line[current_station])
+                distance[name] = abs(xiaobitan_line[station] - xiaobitan_line[current_station])
     # find the shortest distance and its keys
     shortest_distance = min(distance.values())
     # list comprehension, which is a concise way to create lists in Python. It generates a new list containing the name (key) for each key-value pair in the distance dictionary where the value dis is equal to shortest_distance.
-    names = [name for name, dis in distance.items() if dis ==
-             shortest_distance]
+    names = [name for name, dis in distance.items() if dis == shortest_distance]
 
     # print out results
     print(', '.join(names))
