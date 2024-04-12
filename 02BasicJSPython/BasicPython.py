@@ -207,11 +207,18 @@ get_number(10)  # print 25
 get_number(30)  # print 70
 
 # Task 5
-
-
 def find(spaces, stat, n):
     # your code here
-    print(spaces)
+    check_array = []
+    for index, bit in enumerate(stat):
+        # check if car can serve
+        if bit == 1:
+            check_array.append(
+                spaces[index] - n if (spaces[index] - n) >= 0 else float('inf'))
+        elif bit == 0:
+            check_array.append(float('inf'))
+    car_index = check_array.index(min(check_array)) if not all(x == float('inf') for x in check_array) else -1
+    print(car_index)
 
 
 find([3, 1, 5, 4, 3, 2], [0, 1, 0, 1, 1, 1], 2)  # print 5
