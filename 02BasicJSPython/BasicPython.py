@@ -192,9 +192,13 @@ func("郭宣雅", "夏曼藍波安", "郭宣恆")  # print 夏曼藍波安
 
 # Task 4
 def get_number(index):
-
-    print(index)
     # your code here
+    num_sequence = []
+    num = 0
+    for i in range(0, index, 2):
+        num_sequence.extend([num, num + 4, num + 8])
+        num += 7
+    print(num_sequence[index])
 
 
 get_number(1)  # print 4
