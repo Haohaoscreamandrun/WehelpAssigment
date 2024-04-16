@@ -1,4 +1,4 @@
-
+import time
 # Task 1
 def find_and_print(messages, current_station):
 
@@ -73,12 +73,14 @@ messages = {
     "Copper": "I just saw a concert at Taipei Arena.",
     "Vivian": "I'm at Xindian station waiting for you."
 }
+start = time.time()
 find_and_print(messages, "Wanlong")  # print Mary
 find_and_print(messages, "Songshan")  # print Copper
 find_and_print(messages, "Qizhang")  # print Leslie
 find_and_print(messages, "Ximen")  # print Bob
 find_and_print(messages, "Xindian City Hall")  # print Vivian
-
+end = time.time()
+print(end - start)
 # Task 2
 # your code here, maybe
 

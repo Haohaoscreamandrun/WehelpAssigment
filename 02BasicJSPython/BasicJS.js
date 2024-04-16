@@ -80,12 +80,13 @@ const messages = {
   Vivian: "I'm at Xindian station waiting for you.",
 };
 
+console.time()
 findAndPrint(messages, "Wanlong"); // print Mary
 findAndPrint(messages, "Songshan"); // print Copper
 findAndPrint(messages, "Qizhang"); // print Leslie
 findAndPrint(messages, "Ximen"); //print Bob
 findAndPrint(messages, "Xindian City Hall"); // print Vivian
-
+console.timeEnd();
 // Can print names locate at different stations with same distance from currentStation.
 // Can handle currentStation which's on Xiaobitan Line
 
