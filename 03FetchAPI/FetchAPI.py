@@ -72,35 +72,84 @@ with open('03FetchAPI/mrt.csv', mode='w', encoding='utf-8-sig', newline='') as m
 
 # Task 2:  Parse web page data and save to files by Python (Optional)
 
-# import library
-import urllib.request as req
-url = 'https://www.ptt.cc/bbs/Lottery/index.html'
+def openWeb(url):
 
-# create request obj with headers info, use this obj to open the site
-request = req.Request(url, headers={
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36 Edg/123.0.0.0',
-    'cookie': 'over18=1'
-})
+    # import library
+    import urllib.request as req
 
-# extract and open
-with req.urlopen(request) as response:
-    ppt_lotery_data = response.read().decode('utf-8')
+    # create request obj with headers info, use this obj to open the site
+    request = req.Request(url, headers={
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36 Edg/123.0.0.0',
+        'cookie': 'over18=1'
+    })
 
-# print(ppt_lotery_data)  
-# urllib.error.HTTPError: HTTP Error 403: Forbidden
-# webpage decline connection due to un-human behavior
-# In normal request, there are a lot more information sent to web site: request headers
+    # extract and open
+    with req.urlopen(request) as response:
+        data = response.read().decode('utf-8')
+        return data
 
-# After adding request header we can access but only the 18y confirmation page
-# Cause ppt will put a 'over18' cookie in browser after clicked agree
-# Browser will include this cookie in request headers if it already been given the cookie
+    # print(data)  
+    # urllib.error.HTTPError: HTTP Error 403: Forbidden
+    # webpage decline connection due to un-human behavior
+    # In normal request, there are a lot more information sent to web site: request headers
+
+    # After adding request header we can access but only the 18y confirmation page
+    # Cause ppt will put a 'over18' cookie in browser after clicked agree
+    # Browser will include this cookie in request headers if it already been given the cookie
+
+def crawlData(url, times):
+    current_url = url
+    i = 0
+    crawl_all = []
+    while i < times:
+        i += 1
+        data = openWeb(current_url)
+        # start of crawling
+        # pip install BeautifulSoup4
+        import bs4,re,csv
+
+        root = bs4.BeautifulSoup(data, features= "html.parser")
+        titles = root.find_all(name ='div', class_= 'title')
+        
+        # get to the url of next page
+        # find the a tag that got a string like ‹ 上頁
+        next_page_url = "https://www.ptt.cc" + \
+        root.find(name='a', string='‹ 上頁')['href']
+        # update the current_url
+        current_url = next_page_url
+
+        for title in titles:
+            if title.a != None: #print if <a> tag exist(not deleted)
+                try:
+                    # link a parse the article
+                    article_url = "https://www.ptt.cc" + (title.a.get('href'))
+                    article_data = openWeb(article_url)
+                    article_root = bs4.BeautifulSoup(article_data, features="html.parser")
+                    push_times_all = article_root.find_all(name='span', class_='push-tag')
+                    like_dislike_counts = 0
+                    for push_time in push_times_all:
+                        
+                        if len(re.findall("推|噓", push_time.string)) != 0:
+                            like_dislike_counts += 1
+                    
+                    publish_time = article_root.find_all(
+                        name='span', class_='article-meta-value')[3].string
+                except IndexError:
+                    publish_time = ""
+                crawl_all.append({
+                    'title': title.a.string,
+                    'counts': like_dislike_counts,
+                    'publish_time': publish_time
+                })
+        print(f"Complete the crawling in page {i}")
+            
+    # write row in the csv file
+    with open('03FetchAPI/article.csv', mode='w', encoding='utf-8-sig', newline='') as article_csv_file:
+        writer = csv.DictWriter(article_csv_file, fieldnames= ['title', 'counts', 'publish_time'])
+        writer.writerows(crawl_all)
+        print('Data has been saved to article.csv')
+    
 
 
-# pip install BeautifulSoup4
-import bs4
-
-root = bs4.BeautifulSoup(ppt_lotery_data, features= "html.parser")
-titles = root.find_all(name ='div', class_= 'title')
-for title in titles:
-    if title.a != None: #print if <a> tag exist(not deleted)
-        print(title.a.string)
+crawlData('https://www.ptt.cc/bbs/Lottery/index.html',3)
+# crawl for 3 pages
