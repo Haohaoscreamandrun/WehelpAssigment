@@ -7,7 +7,7 @@
 ### Semester 1 (8 weeks)
 1. Week 1 - [RWD practice](https://haohaoscreamandrun.github.io/WehelpAssignment/01RWD/RWD)
 2. Week 2 - [Basics of JavaScript & Python]()
-3. Week 3 - [Net connection of JavaScript & Python](https://haohaoscreamandrun.github.io/WehelpAssignment/FetchAPI)
+3. Week 3 - [Net connection of JavaScript & Python](https://haohaoscreamandrun.github.io/WehelpAssignment/03FetchAPI/FetchAPI)
 4. Week 4 - [FastAPI]()
 5. Week 5 - [MySQL]()
 6. Week 6 - [Membership System developing]()
