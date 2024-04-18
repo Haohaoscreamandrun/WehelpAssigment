@@ -1,12 +1,25 @@
 # Task 1: Parse data from internet and save to files by Python
 
-# write/open best solution
+# fetch from URL
+import urllib.request as request
 import json
-with open("03FetchAPI/taipei-attractions-assignment-1", mode = "r", encoding= 'utf-8') as file:
-    taipei_attractions = json.load(file)
+urls = ['https://padax.github.io/taipei-day-trip-resources/taipei-attractions-assignment-1',
+       'https://padax.github.io/taipei-day-trip-resources/taipei-attractions-assignment-2']
+data = []
+for i, url in enumerate(urls):
+    with request.urlopen(url) as response:
+        data.append(json.load(response))
+taipei_attractions = data[0]
+station_MRT = data[1]
 
-with open("03FetchAPI/taipei-attractions-assignment-2", mode="r", encoding='utf-8') as file:
-    station_MRT = json.load(file)
+
+# write/open best solution
+#import json
+#with open("03FetchAPI/taipei-attractions-assignment-1", mode = "r", encoding= 'utf-8') as file:
+#    taipei_attractions = json.load(file)
+
+#with open("03FetchAPI/taipei-attractions-assignment-2", mode="r", encoding='utf-8') as file:
+#    station_MRT = json.load(file)
 
 ## Find the desired attributes
 # 'stitle' is the Spot title
