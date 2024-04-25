@@ -2,8 +2,6 @@ from fastapi import FastAPI, Request, Form
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
-from starlette.applications import Starlette
-from starlette.middleware import Middleware
 from starlette.middleware.sessions import SessionMiddleware
 
 app = FastAPI()
@@ -17,7 +15,7 @@ templates = Jinja2Templates(directory= 'templates')
 
 @app.get("/", response_class= HTMLResponse)
 async def read_item(request: Request):
-  if request.session["SIGNED-IN"] == False or len(request.session.keys()) == 0:
+  if len(request.session.keys()) == 0:
     request.session.update({"SIGNED-IN": False})
   return templates.TemplateResponse(
     request = request, name = 'login.html'
@@ -67,3 +65,12 @@ async def logout(request: Request):
   request.session.update({"SIGNED-IN": False})
   response = RedirectResponse(url="/", status_code=302)
   return response
+
+@app.get("/square/{square}", response_class=HTMLResponse)
+async def squareCal(square: int, request: Request):
+  square_result = square*square
+  return templates.TemplateResponse(
+    request= request,
+    name= 'square.html',
+    context={"square_result": square_result}
+  )
