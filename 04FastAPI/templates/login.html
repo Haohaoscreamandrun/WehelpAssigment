@@ -11,14 +11,14 @@
   <div class="log-in-container">
     <div class="log-in-title">登入系統</div>
     
-    <form action="" class="log-in-form" onsubmit="checkboxValidation(event)">
+    <form class="log-in-form" id= 'log-in-form' onsubmit="checkboxValidation(event)">
       <div class="form-group">
         <label for="account">帳號</label>
-        <input type="text" name="account" id="account">
+        <input type="text" name="account" id="account" >
       </div>
       <div class="form-group">
         <label for="pwd">密碼</label>
-        <input type="password" name="pwd" id="pwd">
+        <input type="password" name="pwd" id="pwd" >
       </div>
       <div class="form-group">
         <label for="clause">同意條款</label>
@@ -35,6 +35,10 @@
       if(!checkbox.checked){
         alert('請先勾選同意條款');
         event.preventDefault(); //Prevent from submission
+      }else{
+        let form = document.getElementById('log-in-form');
+        form.action = "/signin/"
+        form.method = "post"
       }
     }
   </script>
