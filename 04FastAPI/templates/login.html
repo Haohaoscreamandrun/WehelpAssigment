@@ -13,12 +13,13 @@
     
     <form class="log-in-form" id= 'log-in-form' onsubmit="checkboxValidation(event)">
       <div class="form-group">
-        <label for="account">帳號</label>
-        <input type="username" name="account" id="account" >
+        <label for="username">帳號</label>
+        <input type="text" name="username" id="username" >
       </div>
       <div class="form-group">
-        <label for="pwd">密碼</label>
-        <input type="password" name="pwd" id="pwd" >
+        <label for="password">密碼</label>
+        <input type="password" name="password" id="password" >
+        <!--type password can show asterisk instead of number-->
       </div>
       <div class="form-group">
         <label for="clause">同意條款</label>
@@ -35,7 +36,8 @@
     <form action="" class="log-in-form" id="square-form" onsubmit="calculateSquare(event)">
       <div class="form-group">
         <label for="aquare">正整數</label>
-        <input type="number" name="square" id="square">
+        <input type="number" name="square" id="square" min="1" step="1" placeholder="輸入一個正整數">
+        <!--Limit the input by parameter like type, min and step-->
       </div>
       <div class="form-group">
         <input type="submit" value="計算">
@@ -56,14 +58,9 @@
     }
     function calculateSquare(event){
       let form = document.getElementById('square-form');
-      let input = parseInt(document.getElementById('square').value);
-      if (Number.isInteger(input) && input > 0){
-        form.action = `/square/${input}`
-        form.method = "get"
-      }else{
-        alert('請輸入一個正整數值');
-        event.preventDefault();
-      }
+      let input = document.getElementById('square').value; //value is a string
+      form.action = `/square/${input}`
+      form.method = "get"
     }
   </script>
 </body>
