@@ -30,7 +30,7 @@ async def read_item(request: Request):
 key = ("test", "test")  # modify the username and password here
 
 
-@app.post("/signin/", response_class=HTMLResponse)
+@app.post("/signin", response_class=HTMLResponse)
 async def login(request: Request, username: str = Form(None), password: str = Form(None)):
     # Remove leading and trailing whitespace from input(None type don't have .strip())
     username = username.strip() if username is not None else None
@@ -49,7 +49,7 @@ async def login(request: Request, username: str = Form(None), password: str = Fo
         return RedirectResponse(url="/member/", status_code=302)
 
 
-@app.get("/error/", response_class=HTMLResponse)
+@app.get("/error", response_class=HTMLResponse)
 async def error(request: Request, message: str):  # message for query parameter
     return templates.TemplateResponse(
         request=request,
@@ -60,7 +60,7 @@ async def error(request: Request, message: str):  # message for query parameter
     )
 
 
-@app.get("/member/", response_class=HTMLResponse)
+@app.get("/member", response_class=HTMLResponse)
 async def success(request: Request):
     # block any access without green flag
     if not request.session["SIGNED-IN"] == True:
@@ -73,7 +73,7 @@ async def success(request: Request):
         )
 
 
-@app.get("/signout/", response_class=HTMLResponse)
+@app.get("/signout", response_class=HTMLResponse)
 async def logout(request: Request):
     # switch the flag back to red
     request.session.update({"SIGNED-IN": False})
