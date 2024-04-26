@@ -30,26 +30,27 @@ async def read_item(request: Request):
 key = ("test", "test")  # modify the username and password here
 
 
-@app.post("/signin/", response_class=HTMLResponse)
+@app.post("/signin", response_class=HTMLResponse)
 async def login(request: Request, username: str = Form(None), password: str = Form(None)):
     # Remove leading and trailing whitespace from input(None type don't have .strip())
     username = username.strip() if username is not None else None
     password = password.strip() if password is not None else None
     # Situation 1. User does not type anything or only input whitespace
     if not all((username, password)):
-        return RedirectResponse(url="/error/?message=請輸入帳號與密碼", status_code=302)
+        # HTTP 303 See Other ，自 RFC 2616（HTTP 1.1）起，用於在收到HTTP POST請求之後，進行URL重新導向的操作。
+        return RedirectResponse(url="/error/?message=請輸入帳號與密碼", status_code=303)
     # Situation 2. User provide a wrong username or password
     elif (username, password) != key:
-        return RedirectResponse(url="/error/?message=帳號或密碼輸入錯誤", status_code=302)
+        return RedirectResponse(url="/error/?message=帳號或密碼輸入錯誤", status_code=303)
     # Situation 3. User provide the correct key
     else:
         # Upon successful login, set a flag in the session to indicate SIGNED-IN
         request.session.update({"SIGNED-IN": True})
         # 302 is necessary for redirecting
-        return RedirectResponse(url="/member/", status_code=302)
+        return RedirectResponse(url="/member/", status_code=303)
 
 
-@app.get("/error/", response_class=HTMLResponse)
+@app.get("/error", response_class=HTMLResponse)
 async def error(request: Request, message: str):  # message for query parameter
     return templates.TemplateResponse(
         request=request,
@@ -60,7 +61,7 @@ async def error(request: Request, message: str):  # message for query parameter
     )
 
 
-@app.get("/member/", response_class=HTMLResponse)
+@app.get("/member", response_class=HTMLResponse)
 async def success(request: Request):
     # block any access without green flag
     if not request.session["SIGNED-IN"] == True:
@@ -73,7 +74,7 @@ async def success(request: Request):
         )
 
 
-@app.get("/signout/", response_class=HTMLResponse)
+@app.get("/signout", response_class=HTMLResponse)
 async def logout(request: Request):
     # switch the flag back to red
     request.session.update({"SIGNED-IN": False})
