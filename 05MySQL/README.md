@@ -1,5 +1,12 @@
 SQL Commands and screenshots
 ===
+# Content
+1. [Task 2: Create database and table in your MySQL server](#task-2-create-database-and-table-in-your-mysql-server)
+2. [Task 3. SQL CRUD](#task-3-sql-crud)
+3. [Task 4. SQL Aggregation Functions](#task-4-sql-aggregation-functions)
+4. [Task 5. SQL JOIN](#task-5-sql-join)
+5. [Use mysqldump command to export the website database to a file named data.sql,putting it in the week5 folder](#task-6-use-mysqldump-command-to-export-the-website-database-to-a-file-named-datasqlputting-it-in-the-week5-folder)
+***
 ## Task 2: Create database and table in your MySQL server
 ### Q1. Create a new database named website.
 ```sql
