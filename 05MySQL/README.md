@@ -1,4 +1,4 @@
-# SQL Commands and screenshots
+SQL Commands and screenshots
 ===
 ## Task 2: Create database and table in your MySQL server
 ### Q1. Create a new database named website.
