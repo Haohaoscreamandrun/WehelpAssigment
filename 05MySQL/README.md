@@ -16,6 +16,7 @@ Query OK, 1 row affected (0.00 sec)
 mysql> use website;
 Database changed
 ```
+> 可視化資料庫內table關聯的網路工具：[dbdiagram](https://dbdiagram.io/home)
 ### Q2. Create a new table named member, in the website database, designed as below:
 | Column Name | Data Type | Additional Settings | Description |
 |:--|:--|:--|:--|
@@ -35,6 +36,7 @@ mysql> create table member (id bigint auto_increment,
     -> primary key (id));
 Query OK, 0 rows affected (0.01 sec)
 ```
+> Varchar(255)代表可以鍵入最多255個字元
 ![Task2.Q1](/05MySQL/screenshots/Task2_screenshots.png)
 ## Task 3. SQL CRUD
 ### Q1. INSERT a new row to the member table where name, username and password must be set to test. INSERT additional 4 rows with arbitrary data.
@@ -83,6 +85,7 @@ mysql> select * from member
 mysql> select * from member
     -> where name like '%es%';
 ```
+> '%'為萬用符號，搭配使用作模糊比對; %es: 表示以es結尾（％代表任意值） es%: 則表示es開頭
 ![Task3.Q5Q6](/05MySQL/screenshots/Task3_3_screenshots.png)
 ### Q7. SELECT rows where both username and password equal to test.
 ```sql
@@ -148,6 +151,7 @@ mysql> select avg(follower_count)
     -> limit 2
     -> ) as top_2;
 ```
+> 使用子查詢(subquery)取得前兩列的資料再計算。
 ![Task4.Q4](/05MySQL/screenshots/Task4_2_screenshots.png)
 ## Task 5. SQL JOIN
 ### Q1. Create a new table named message, in the website database. designed as below:
@@ -171,6 +175,7 @@ mysql> create table message
 Query OK, 0 rows affected (0.01 sec)
 mysql> describe message;
 ```
+> Foreign key可以綁定兩個table，若想在table2加入table1沒有key的資料則會失敗;反之，在有聯結的情況下，想刪除table1有被鍵結的資料會失敗。
 ![Task5.Q1](/05MySQL/screenshots/Task5_2_screenshots.png)
 ### Inert 5 messages
 ```sql
@@ -190,6 +195,7 @@ mysql> select member.id, member.name, message.content
     -> from member
     -> inner join message on member.id = message.member_id;
 ```
+> left join以FROM後面的table1為主，若table1沒有值，table2對不上的列前面會顯示為null
 ![Task5.Q2](/05MySQL/screenshots/Task5_4_screenshots.png)
 ### Q3. SELECT all messages, including sender names, where sender username equals to test. We have to JOIN the member table to filter and get that.
 ```sql
