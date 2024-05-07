@@ -1,0 +1,43 @@
+.nav-bar
+{
+  padding: 1em 0em;
+  text-align: center;
+  font-size: x-large;
+  font-weight: 800;
+  color: white;
+  background-color: darkslategray;
+}
+
+.log-in-container
+{
+  display: flex;
+  flex-direction: column;
+  padding-top: 2em;
+  align-items: center;
+
+  padding-bottom: 2em;
+  border-bottom: 1px grey solid;
+}
+
+.log-in-title
+{
+  flex: auto;
+  margin-bottom: 10px;
+}
+
+.log-in-form
+{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.form-group
+{
+  margin: 5px 0px;
+}
+
+.form-group label
+{
+  margin-right: 5px;
+}

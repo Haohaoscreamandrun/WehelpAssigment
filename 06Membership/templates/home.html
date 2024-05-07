@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Item Details</title>
+  <link rel="stylesheet" href="{{ url_for('static', path='/styles.css')}}">
+</head>
+<body>
+  <nav class="nav-bar">歡迎光臨，請輸入帳號密碼</nav>
+  <div class="log-in-container">
+    <div class="log-in-title">登入系統</div>
+    
+    <form class="log-in-form" id= 'log-in-form' onsubmit="checkboxValidation(event)">
+      <div class="form-group">
+        <label for="username">帳號</label>
+        <input type="text" name="username" id="username" >
+      </div>
+      <div class="form-group">
+        <label for="password">密碼</label>
+        <input type="password" name="password" id="password" >
+        <!--type password can show asterisk instead of number-->
+      </div>
+      <div class="form-group">
+        <label for="clause">同意條款</label>
+        <input type="checkbox" name="clause" id="clause">
+      </div>
+      <div class="form-group">
+        <input type="submit" value="登入">
+      </div>
+    </form>
+  </div>
+  
+  
+  <script>
+    function checkboxValidation(event){
+      let checkbox = document.getElementById('clause');
+      if(!checkbox.checked){
+        alert('請先勾選同意條款');
+        event.preventDefault(); //Prevent from submission
+      }else{
+        let form = document.getElementById('log-in-form');
+        form.action = "/signin"
+        form.method = "post"
+      }
+    }
+    
+  </script>
+</body>
+</html>
