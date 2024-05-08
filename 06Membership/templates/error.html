@@ -10,9 +10,18 @@
   <nav class="nav-bar">失敗頁面</nav>
   <div class="log-in-container">
     <div class="log-in-title">{{message}}</div>
+    <form class="log-in-form" id='return-home' onsubmit="homepage()">
+      <div class="form-group">
+        <input type="submit" value="返回首頁">
+      </div>
+    </form>
   </div>
   <script>
-    
+    function homepage(event) {
+        let form = document.getElementById("return-home")
+        form.action = "/"
+        form.method = "get"
+      }
   </script>
 </body>
 </html>
