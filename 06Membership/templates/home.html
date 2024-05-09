@@ -30,12 +30,14 @@
         <input type="submit" value="註冊">
       </div>
     </form>
-    {% if message %}
-    <div class="log-in-title">{{message}}</div>
-    {% endif %}
+    
     <!--this Jinja2 template block checks if the variable message exists and is truthy. If it does, it renders a <div> element containing the value of message. Otherwise, nothing is rendered. This is a common pattern used for conditional rendering in web templates.-->
   </div>
-
+  {% if message %}
+  <div class="log-in-container">
+    <div class="log-in-title">{{message}}</div>
+  </div>
+  {% endif %}
   <div class="log-in-container">
     <div class="log-in-title">登入系統</div>
     

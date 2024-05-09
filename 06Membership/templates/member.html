@@ -16,11 +16,37 @@
       </div>
     </form>
   </div>
+  <div class="log-in-container">
+    <div class="log-in-title">快來留言吧</div>
+    <form class="log-in-form" id='message-form' onsubmit="createMessage(event)">
+      <div class="form-group">
+        <label for="text-message">內容</label>
+        <input type="text" name="message" id="text-message" required>
+      </div>
+      <div class="form-group">
+        <input type="submit" value="送出">
+      </div>
+    </form>
+  </div>
+  <div class="log-in-container">
+    {{message | safe}}
+  </div>
   <script>
     function logOut(event){
       let form = document.getElementById("log-out-form")
       form.action = "/signout"
       form.method = "get"
+    }
+    function createMessage(event){
+      let form = document.getElementById("message-form")
+      form.action = "/createMessage"
+      form.method = "post"
+    }
+    function deleteMessage(event){
+      let id = event.target.id;
+      let form = document.getElementById(`${id}`)
+      form.action = "/deleteMessage"
+      form.method = "post"
     }
   </script>
 </body>
