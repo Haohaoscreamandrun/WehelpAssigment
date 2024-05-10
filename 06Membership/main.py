@@ -45,9 +45,10 @@ async def signup(request: Request, username: str = Form(None), account: str = Fo
     )
     # select the username column and compare to input 
     mycursor = mydb.cursor()
-    sql = f'SELECT username FROM member WHERE username = "{username}"'
+    sql = 'SELECT username FROM member WHERE username = %s'
+    val = (username,)
     print(sql)
-    mycursor.execute(sql)
+    mycursor.execute(sql,val)
     myresult = mycursor.fetchone()
     # condition 1: username exist
     if myresult is not None:
@@ -55,8 +56,8 @@ async def signup(request: Request, username: str = Form(None), account: str = Fo
     # condition 2: new username, insert into
     else:
         sql = "INSERT INTO member (username, account, password) VALUES (%s, %s ,%s)"
-        val = (username, account, password)
-        mycursor.execute(sql, val)
+        query = (username, account, password)
+        mycursor.execute(sql, query)
         mydb.commit()
         #redirect to homepage with query message
         return RedirectResponse(url="/?message=註冊成功，請由下方登入", status_code=303)
@@ -174,8 +175,8 @@ async def createMessage(request: Request, message: str = Form(None)):
         mycursor = mydb.cursor()
         # INSERT INTO
         sql = 'INSERT INTO message (member_id, context) VALUES (%s, %s)'
-        val = (request.session["MEMBER_ID"], message)
-        mycursor.execute(sql, val)
+        query = (request.session["MEMBER_ID"], message)
+        mycursor.execute(sql, query)
         mydb.commit()
         # redirect to member page
         return RedirectResponse(url="/member", status_code=303)
@@ -194,8 +195,9 @@ async def deleteMessage(request: Request, message_id: str = Form(None)):
         )
         mycursor = mydb.cursor()
         # Delete message by ID
-        sql = f"DELETE FROM message WHERE id = '{message_id}'"
-        mycursor.execute(sql)
+        sql = 'DELETE FROM message WHERE id = %s'
+        query = (message_id,)
+        mycursor.execute(sql, query)
         mydb.commit()
         return RedirectResponse(url="/member", status_code=303)
 
