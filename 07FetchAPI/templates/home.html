@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Item Details</title>
+  <link rel="stylesheet" href="{{ url_for('static', path='/styles.css')}}">
+</head>
+<body>
+  <nav class="nav-bar">歡迎光臨，請註冊登入系統</nav>
+  
+  <div class="log-in-container">
+    <div class="log-in-title">註冊帳號</div>
+    
+    <form class="log-in-form" id= 'sign-up-form' onsubmit="signUpValidation(event)">
+      <div class="form-group">
+        <label for="username">姓名</label>
+        <input type="text" name="username" id="username" required>
+      </div>
+      <div class="form-group">
+        <label for="account-signup">帳號</label>
+        <input type="text" name="account" id="account-signup" required>
+      </div>
+      <div class="form-group">
+        <label for="password-signup">密碼</label>
+        <input type="password" name="password" id="password-signup" required>
+        <!--type password can show asterisk instead of number-->
+      </div>
+      <div class="form-group">
+        <input type="submit" value="註冊">
+      </div>
+    </form>
+    
+    <!--this Jinja2 template block checks if the variable message exists and is truthy. If it does, it renders a <div> element containing the value of message. Otherwise, nothing is rendered. This is a common pattern used for conditional rendering in web templates.-->
+  </div>
+  {% if message %}
+  <div class="log-in-container">
+    <div class="log-in-title">{{message}}</div>
+  </div>
+  {% endif %}
+  <div class="log-in-container">
+    <div class="log-in-title">登入系統</div>
+    
+    <form class="log-in-form" id="log-in-form" onsubmit="signInValidation(event)">
+      <div class="form-group">
+        <label for="account-login">帳號</label>
+        <input type="text" name="account" id="account-login" required>
+      </div>
+      <div class="form-group">
+        <label for="password-login">密碼</label>
+        <input type="password" name="password" id="password-login" required>
+        <!--type password can show asterisk instead of number-->
+      </div>
+      <div class="form-group">
+        <input type="submit" value="登入">
+      </div>
+    </form>
+  </div>
+  
+  
+  <script>
+    function signUpValidation(event){
+      let username = document.getElementById('username').value.trim();
+      let account = document.getElementById('account-signup').value.trim();
+      let password = document.getElementById('password-signup').value.trim();
+      
+      if(!username || !account || !password){
+        alert('請勿輸入空白字元');
+        event.preventDefault(); //Prevent from submission
+      }else{
+        let form = document.getElementById('sign-up-form');
+        form.action = "/signup"
+        form.method = "post"
+      }
+    }
+    function signInValidation(event) {
+        let account = document.getElementById('account-login').value.trim();
+        let password = document.getElementById('password-login').value.trim();
+
+        if (!account || !password) {
+          alert('請勿輸入空白字元');
+          event.preventDefault(); //Prevent from submission
+        } else {
+          let form = document.getElementById('log-in-form');
+          form.action = "/signin"
+          form.method = "post"
+        }
+      }
+  </script>
+</body>
+</html>

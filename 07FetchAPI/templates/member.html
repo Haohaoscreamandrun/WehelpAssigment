@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Item Details</title>
+  <link rel="stylesheet" href="{{ url_for('static', path='/styles.css')}}">
+</head>
+<body>
+  <nav class="nav-bar">歡迎光臨，這是會員頁</nav>
+  <div class="log-in-container">
+    <div class="log-in-title">{{username}}，歡迎登入系統</div>
+    <form class="log-in-form" id='log-out-form' onsubmit="logOut()">
+      <div class="form-group">
+        <input type="submit" value="登出">
+      </div>
+    </form>
+  </div>
+  <div class="log-in-container">
+    <div class="log-in-title"><b>查詢會員姓名</b></div>
+    <form class="log-in-form" id="member-search" onsubmit="searchMember(event)">
+      <div class="form-group">
+        <input type="text" name="search-account" id="search-account" required>
+        <input type="submit" value="查詢">
+      </div>
+    </form>
+    <div class="log-in-title" id="member-search-result"></div>
+  </div>
+  <div class="log-in-container">
+    <div class="log-in-title">快來留言吧</div>
+    <form class="log-in-form" id='message-form' onsubmit="createMessage(event)">
+      <div class="form-group">
+        <label for="text-message">內容</label>
+        <input type="text" name="message" id="text-message" required>
+      </div>
+      <div class="form-group">
+        <input type="submit" value="送出">
+      </div>
+    </form>
+  </div>
+  <div class="log-in-container">
+    {{message | safe}}
+  </div>
+  <script>
+    function logOut(event){
+      let form = document.getElementById("log-out-form")
+      form.action = "/signout"
+      form.method = "get"
+    }
+    function createMessage(event){
+      let form = document.getElementById("message-form")
+      form.action = "/createMessage"
+      form.method = "post"
+    }
+    function deleteMessage(event){
+      let id = event.target.id;
+      let form = document.getElementById(`${id}`)
+      form.action = "/deleteMessage"
+      form.method = "post"
+    }
+    async function searchMember(event){
+      event.preventDefault()
+      // get the input data
+      let form = document.getElementById("search-account")
+      let input = form.value.trim()
+      // clear out result
+      let outputParent = document.getElementById("member-search-result")
+      outputParent.textContent = ""
+      let url = "http://127.0.0.1:8000/api/member?account=".concat('', input)
+      try {
+        let response = await fetch(url, { method: "GET" })
+        let responseJSON = await response.json()
+        let username = responseJSON.data.username
+        let account = responseJSON.data.account
+        account = `(${account})`
+        for (let child of [username, account]){
+          let element = document.createElement("span")
+          element.textContent = child
+          outputParent.appendChild(element)
+        }
+        outputParent.children[0].style.fontWeight = "bold"
+
+      } catch(error){
+        let element = document.createElement("span")
+        element.textContent = "No data"
+        outputParent.appendChild(element)
+      }
+    }
+  </script>
+</body>
+</html>
