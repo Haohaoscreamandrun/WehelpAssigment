@@ -18,13 +18,23 @@
   </div>
   <div class="log-in-container">
     <div class="log-in-title"><b>查詢會員姓名</b></div>
-    <form class="log-in-form" id="member-search" onsubmit="searchMember(event)">
+    <form class="log-in-form" onsubmit="searchMember(event)">
       <div class="form-group">
         <input type="text" name="search-account" id="search-account" required>
         <input type="submit" value="查詢">
       </div>
     </form>
     <div class="log-in-title" id="member-search-result"></div>
+  </div>
+  <div class="log-in-container">
+    <div class="log-in-title"><b>更新我的姓名</b></div>
+    <form class="log-in-form" onsubmit="updateUsername(event)">
+      <div class="form-group">
+        <input type="text" name="username-update" id="username-update" required>
+        <input type="submit" value="更新">
+        <div class="log-in-title" id="username-update-result"></div>
+      </div>
+    </form>
   </div>
   <div class="log-in-container">
     <div class="log-in-title">快來留言吧</div>
@@ -85,6 +95,36 @@
         element.textContent = "No data"
         outputParent.appendChild(element)
       }
+    }
+    async function updateUsername(event){
+      event.preventDefault()
+      let form = document.getElementById("username-update")
+      let input = form.value.trim()
+      console.log(input)
+      let outputParent = document.getElementById("username-update-result")
+      outputParent.textContent = ""
+      let url = "http://127.0.0.1:8000/api/member"
+      let updateOE = ""
+      try{
+        let response = await fetch(url, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({name:input})
+        })
+        let responseJSON = await response.json()
+        updateOE = Object.keys(responseJSON)[0]
+      } catch (e) {
+        console.error(e)
+      }
+      let child = document.createElement("span")
+      if (updateOE === "ok") {
+        child.textContent = "更新成功"
+      } else if (updateOE === "error"){
+        child.textContent = "未成功更新，請重新嘗試"
+      }
+      outputParent.appendChild(child)
     }
   </script>
 </body>

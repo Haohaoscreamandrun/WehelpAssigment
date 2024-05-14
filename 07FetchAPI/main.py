@@ -1,13 +1,14 @@
 import mysql.connector
 from dotenv import load_dotenv
 import os
-from fastapi import FastAPI, Request, Form
+from fastapi import FastAPI, HTTPException, Request, Form, Header
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from starlette.middleware.sessions import SessionMiddleware
 import uvicorn
 from pydantic import BaseModel
+from typing import Annotated, Optional
 
 app = FastAPI()
 
@@ -255,7 +256,34 @@ def findMember(request: Request, account: str):
             item["data"] = data
     return item
 
+class nameUpdateRequest(BaseModel):
+    name: str
 
+
+@app.patch("/api/member")
+async def updateUsername(request: Request, body: nameUpdateRequest, content_type: str = Header(...)):
+    if content_type != "application/json":
+        raise HTTPException(
+            status_code=400, detail="Invalid Content-Type header. Expected 'application/json'.")
+    # connect to MySQL 'website' database
+    mydb = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password=DBpassword,
+        database="website"
+    )
+    mycursor = mydb.cursor()
+    sql = "UPDATE member\
+            SET username = %s\
+            WHERE username = %s"
+    val = (body.name, request.session["MEMBER_USERNAME"])
+    print(val)
+    mycursor.execute(sql, val)
+    mydb.commit()
+    if (mycursor.rowcount != 0):
+        return {"ok": True}
+    else:
+        return {"error": True}
 
 if __name__ == "__main__":
    uvicorn.run("main:app",host = "127.0.0.1", port= 8000, log_level="info")
