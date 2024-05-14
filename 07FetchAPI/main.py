@@ -281,6 +281,7 @@ async def updateUsername(request: Request, body: nameUpdateRequest, content_type
     mycursor.execute(sql, val)
     mydb.commit()
     if (mycursor.rowcount != 0):
+        request.session.update({"MEMBER_USERNAME": body.name})
         return {"ok": True}
     else:
         return {"error": True}

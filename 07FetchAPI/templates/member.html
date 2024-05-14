@@ -32,9 +32,9 @@
       <div class="form-group">
         <input type="text" name="username-update" id="username-update" required>
         <input type="submit" value="更新">
-        <div class="log-in-title" id="username-update-result"></div>
       </div>
     </form>
+    <div class="log-in-title" id="username-update-result"></div>
   </div>
   <div class="log-in-container">
     <div class="log-in-title">快來留言吧</div>
@@ -100,7 +100,6 @@
       event.preventDefault()
       let form = document.getElementById("username-update")
       let input = form.value.trim()
-      console.log(input)
       let outputParent = document.getElementById("username-update-result")
       outputParent.textContent = ""
       let url = "http://127.0.0.1:8000/api/member"
