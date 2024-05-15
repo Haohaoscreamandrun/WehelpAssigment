@@ -14,12 +14,12 @@
     
     <form class="log-in-form" id= 'sign-up-form' onsubmit="signUpValidation(event)">
       <div class="form-group">
-        <label for="username">姓名</label>
-        <input type="text" name="username" id="username" required>
+        <label for="name">姓名</label>
+        <input type="text" name="name" id="name" required>
       </div>
       <div class="form-group">
-        <label for="account-signup">帳號</label>
-        <input type="text" name="account" id="account-signup" required>
+        <label for="username-signup">帳號</label>
+        <input type="text" name="username" id="username-signup" required>
       </div>
       <div class="form-group">
         <label for="password-signup">密碼</label>
@@ -43,8 +43,8 @@
     
     <form class="log-in-form" id="log-in-form" onsubmit="signInValidation(event)">
       <div class="form-group">
-        <label for="account-login">帳號</label>
-        <input type="text" name="account" id="account-login" required>
+        <label for="username-login">帳號</label>
+        <input type="text" name="username" id="username-login" required>
       </div>
       <div class="form-group">
         <label for="password-login">密碼</label>
@@ -60,11 +60,11 @@
   
   <script>
     function signUpValidation(event){
-      let username = document.getElementById('username').value.trim();
-      let account = document.getElementById('account-signup').value.trim();
+      let name = document.getElementById('name').value.trim();
+      let username = document.getElementById('username-signup').value.trim();
       let password = document.getElementById('password-signup').value.trim();
       
-      if(!username || !account || !password){
+      if(!name || !username || !password){
         alert('請勿輸入空白字元');
         event.preventDefault(); //Prevent from submission
       }else{
@@ -74,10 +74,10 @@
       }
     }
     function signInValidation(event) {
-        let account = document.getElementById('account-login').value.trim();
+        let username = document.getElementById('username-login').value.trim();
         let password = document.getElementById('password-login').value.trim();
 
-        if (!account || !password) {
+        if (!username || !password) {
           alert('請勿輸入空白字元');
           event.preventDefault(); //Prevent from submission
         } else {

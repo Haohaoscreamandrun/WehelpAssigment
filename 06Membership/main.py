@@ -22,7 +22,7 @@ templates = Jinja2Templates(directory='templates')
 @app.get("/", response_class=HTMLResponse)
 async def read_item(request: Request, message: str = None):
     if len(request.session.keys()) == 0:  # switch the flag to False if there's no flag
-        request.session.update({"SIGNED-IN": False})
+        request.session.update({"SIGNED_IN": False})
 
     return templates.TemplateResponse(
         # Declare a Request parameter in the path operation that will return a template.
@@ -33,9 +33,9 @@ async def read_item(request: Request, message: str = None):
     )
 
 @app.post("/signup", response_class=HTMLResponse)
-async def signup(request: Request, username: str = Form(None), account: str = Form(None), password: str = Form(None)):
-    username, account, password = (s.strip() for s in (username, account, password))
-    print("Form input:",username, account, password)
+async def signup(request: Request, name: str = Form(None), username: str = Form(None), password: str = Form(None)):
+    name, username, password = (s.strip() for s in (name, username, password))
+    print("Form input:",name, username, password)
     # connect to MySQL 'website' database
     mydb = mysql.connector.connect(
         host="localhost",
@@ -43,20 +43,20 @@ async def signup(request: Request, username: str = Form(None), account: str = Fo
         password=DBpassword,
         database="website"
     )
-    # select the username column and compare to input 
+    # select the name column and compare to input 
     mycursor = mydb.cursor()
-    sql = 'SELECT username FROM member WHERE username = %s'
-    val = (username,)
+    sql = 'SELECT name FROM member WHERE name = %s'
+    val = (name,)
     print(sql)
     mycursor.execute(sql,val)
     myresult = mycursor.fetchone()
-    # condition 1: username exist
+    # condition 1: name exist
     if myresult is not None:
         return RedirectResponse(url="/error/?message=Repeated Username", status_code=303)
-    # condition 2: new username, insert into
+    # condition 2: new name, insert into
     else:
-        sql = "INSERT INTO member (username, account, password) VALUES (%s, %s ,%s)"
-        query = (username, account, password)
+        sql = "INSERT INTO member (name, username, password) VALUES (%s, %s ,%s)"
+        query = (name, username, password)
         mycursor.execute(sql, query)
         mydb.commit()
         #redirect to homepage with query message
@@ -64,8 +64,8 @@ async def signup(request: Request, username: str = Form(None), account: str = Fo
         
 
 @app.post("/signin", response_class=HTMLResponse)
-async def login(request: Request, account: str = Form(None), password: str = Form(None)):
-    account, password = (s.strip() for s in (account, password))
+async def login(request: Request, username: str = Form(None), password: str = Form(None)):
+    username, password = (s.strip() for s in (username, password))
     # connect to MySQL 'website' database
     mydb = mysql.connector.connect(
         host="localhost",
@@ -74,22 +74,22 @@ async def login(request: Request, account: str = Form(None), password: str = For
         database="website"
     )
     mycursor = mydb.cursor()
-    # select all account and password
-    sql ='SELECT * FROM member WHERE account = %s AND password = %s'
-    query = (f'{account}', f'{password}',)
+    # select all username and password
+    sql ='SELECT * FROM member WHERE username = %s AND password = %s'
+    query = (f'{username}', f'{password}',)
     mycursor.execute(sql,query)
     myresult = mycursor.fetchall()
     if not myresult:
         return RedirectResponse(url="/error/?message=Username or password is not correct", status_code=303)
     else:
         for row in myresult:
-            member_id, member_username, member_account, member_password = row
+            member_id, member_name, member_username, member_password = row
             # Store sign-in status and credentials into sessionmiddleware
             request.session.update({
                 "SIGNED_IN": True,
                 "MEMBER_ID": member_id,
+                "MEMBER_NAME": member_name,
                 "MEMBER_USERNAME": member_username,
-                "MEMBER_ACCOUNT": member_account,
                 "MEMBER_PASSWORD": member_password
             })
         return RedirectResponse(url="/member", status_code=303)
@@ -124,7 +124,7 @@ async def success(request: Request):
         # select all message
         sql = "SELECT \
             message.id AS message,\
-            member.username AS member, \
+            member.name AS member, \
             message.context AS message \
             FROM member \
             INNER JOIN message ON member.id = message.member_id"
@@ -136,7 +136,7 @@ async def success(request: Request):
             message += f'<form id="delete-form-{m[0]}" style="display: inline" onsubmit="deleteMessage(event)"> \
                 <b>{m[1]}</b> : {m[2]} \
                 <input type="hidden" name="message_id" value="{m[0]}">'
-            if m[1] == request.session["MEMBER_USERNAME"]:
+            if m[1] == request.session["MEMBER_NAME"]:
                 message += '<input type="submit" value="x">\
                 </form>'
             else:
@@ -146,7 +146,7 @@ async def success(request: Request):
             request=request,
             name='member.html',
             context={
-                "username": request.session["MEMBER_USERNAME"],
+                "name": request.session["MEMBER_NAME"],
                 "message":message},
             status_code=200
         )
@@ -208,5 +208,5 @@ if __name__ == "__main__":
 load_dotenv()
 DBpassword = os.getenv('password')
 
-# "CREATE TABLE member (id INT AUTO_INCREMENT PRIMARY KEY, username VARCHAR(255), account VARCHAR(255), password VARCHAR(255))"
+# "CREATE TABLE member (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255), username VARCHAR(255), password VARCHAR(255))"
 

@@ -9,7 +9,7 @@
 <body>
   <nav class="nav-bar">歡迎光臨，這是會員頁</nav>
   <div class="log-in-container">
-    <div class="log-in-title">{{username}}，歡迎登入系統</div>
+    <div class="log-in-title">{{name}}，歡迎登入系統</div>
     <form class="log-in-form" id='log-out-form' onsubmit="logOut()">
       <div class="form-group">
         <input type="submit" value="登出">
@@ -20,7 +20,7 @@
     <div class="log-in-title"><b>查詢會員姓名</b></div>
     <form class="log-in-form" onsubmit="searchMember(event)">
       <div class="form-group">
-        <input type="text" name="search-account" id="search-account" required>
+        <input type="text" name="search-username" id="search-username" required>
         <input type="submit" value="查詢">
       </div>
     </form>
@@ -30,11 +30,11 @@
     <div class="log-in-title"><b>更新我的姓名</b></div>
     <form class="log-in-form" onsubmit="updateUsername(event)">
       <div class="form-group">
-        <input type="text" name="username-update" id="username-update" required>
+        <input type="text" name="name-update" id="name-update" required>
         <input type="submit" value="更新">
       </div>
     </form>
-    <div class="log-in-title" id="username-update-result"></div>
+    <div class="log-in-title" id="name-update-result"></div>
   </div>
   <div class="log-in-container">
     <div class="log-in-title">快來留言吧</div>
@@ -71,19 +71,19 @@
     async function searchMember(event){
       event.preventDefault()
       // get the input data
-      let form = document.getElementById("search-account")
+      let form = document.getElementById("search-username")
       let input = form.value.trim()
       // clear out result
       let outputParent = document.getElementById("member-search-result")
       outputParent.textContent = ""
-      let url = "http://127.0.0.1:8000/api/member?account=".concat('', input)
+      let url = "http://127.0.0.1:8000/api/member?username=".concat('', input)
       try {
         let response = await fetch(url, { method: "GET" })
         let responseJSON = await response.json()
+        let name = responseJSON.data.name
         let username = responseJSON.data.username
-        let account = responseJSON.data.account
-        account = `(${account})`
-        for (let child of [username, account]){
+        username = `(${username})`
+        for (let child of [name, username]){
           let element = document.createElement("span")
           element.textContent = child
           outputParent.appendChild(element)
@@ -98,9 +98,9 @@
     }
     async function updateUsername(event){
       event.preventDefault()
-      let form = document.getElementById("username-update")
+      let form = document.getElementById("name-update")
       let input = form.value.trim()
-      let outputParent = document.getElementById("username-update-result")
+      let outputParent = document.getElementById("name-update-result")
       outputParent.textContent = ""
       let url = "http://127.0.0.1:8000/api/member"
       let updateOE = ""
