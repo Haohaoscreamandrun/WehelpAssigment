@@ -6,8 +6,115 @@
 
 1. What happens If we add a defer attribute to a ```<script>``` tag?
 2. What happens If we add an async attribute to a ```<script>``` tag?
-3. When to use these 2 attributes? Could you give us code examples to illustrate the
-use cases for these 2 attributes?
+3. When to use these 2 attributes? Could you give us code examples to illustrate the use cases for these 2 attributes?
+
+### Answer
+
+#### History: When is the attribute added and why?
+
++ 預設情況下，瀏覽器解析HTML時，只要讀到```<script>```就會暫停解析文件物件模型(Document Object Model, DOM)，向```<script scr="...">```中的位址請求資源，並在下載完成後立刻執行。這樣的特性可能衍生幾種問題：
+  + ```<script>```被放在前面，欲操作的DOM尚未被解析，```<script>```內的程式無法順利運作。
+
+  ```html
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+  </head>
+  <body>
+    <script src="/08IndeStudy/Tryout/tryout.js"></script>
+    Hello World!
+    <div id="operate"></div>
+  <!-- <script src="/08IndeStudy/Tryout/tryout.js"></script> -->
+  </body>
+  </html>
+  ```
+
+  ```js
+  // try to manipulate the lines after <script>
+  let device = document.getElementById("operate")
+  device.innerHTML = "My name is HaoHao"
+  ```
+
+  ![01. manipulate DOM before analyzed ](/08IndeStudy/Screenshots/Topic1/01.%20manipulate%20DOM%20before%20analyzed%20.png)
+  
+  + 上述問題可以透過將```<script>```放在```<body>```閉合處解決，但在更複雜龐大的網站中資源檔案越來越大，下載或執行過久會導致卡畫面，使用者體驗不佳。(以```setTimeout()```模擬載入時間過久)
+  
+  ```js
+  // use setTimeout() as mimic of larger js file
+  setTimeout(nameDiv, 5000)
+  function nameDiv(){
+    let device = document.getElementById("operate")
+    device.innerHTML = "My name is HaoHao"
+  }
+  ```
+
+  ![02. script takes time to load](/08IndeStudy/Screenshots/Topic1/02.%20script%20takes%20time%20to%20load.png)
+
++ 在HTML4和HTML5中，```<script>```多了```defer async```兩種屬性，皆是用於幫助開發者控制外源```<script>```資源的載入及執行順序，避免上述情形。
+
+#### The function of defer and async attribute
+
+![03. runtime of different script attribute](/08IndeStudy/Screenshots/Topic1/03.%20runtime%20of%20different%20script%20attribute.png)
+
+##### Similarity
+
++ 解析HTML遇到```<script src="..." defer> or <script src="..." async>```時，在背景執行下載而不阻擋瀏覽器建立DOM，使用者可以先看到網頁內容。
++ 只對外部載入的```<script>```有效，inline script會直接被執行。
+
+##### ```<script src="..." defer>```
+
++ DOM全部建立完成才開始執行。
++ 同樣有defer attribute的```<script src="..." defer>```會依照排列順序依次執行，無論下載完成與否。
++ 適用於會操作HTML element或是其他```<script>```的，可以放在```<header>```盡早完成下載，但要注意順序。
+
+##### ```<script src="..." async>```
+
++ 只要下載完成就開始執行，停止執行建立DOM。
++ ```<script src="..." async>```之間無法保證執行順序，和其他```<script>```也沒有排序，只要下載好就會執行。
++ 適用於與DOM無關的```<script>```，如獨立第三方的```<script>```
+
+#### Examples
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Script Defer Attribute Example</title>
+  <script defer src="defer.js"></script>
+</head>
+
+<body>
+  <h1>Script Defer/Async Attribute Example</h1>
+  
+  <div id="parent">
+  <img
+    src="https://images.pexels.com/photos/1388069/pexels-photo-1388069.jpeg?cs=srgb&dl=pexels-wildlittlethingsphoto-1388069.jpg&fm=jpg"
+    alt="">
+  </div>
+  <script async src="async.js"></script>
+  
+  <script>
+    let parent = document.getElementById("parent")
+    for (let i = 0; i <= 3; i++) {
+      let p = document.createElement("p");
+      p.innerText = `Inline ${i} times`;
+      parent.appendChild(p);
+    }
+    console.log("Inline function complete")
+  </script>
+
+</body>
+
+</html>
+```
+
+![04. Examples](/08IndeStudy/Screenshots/Topic1/04.%20Examples.png)
 
 ## Topic 2: CSS Selector Naming
 

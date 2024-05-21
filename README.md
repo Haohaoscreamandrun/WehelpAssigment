@@ -16,9 +16,9 @@
 7. Week 7 - [Fetch & API](https://github.com/Haohaoscreamandrun/WehelpAssignment/blob/main/07FetchAPI/app/main.py)
 8. Week 8 - [Independent Study](https://github.com/Haohaoscreamandrun/WehelpAssignment/blob/main/08IndeStudy/Topic%20Study.md)
 
-
 ## The works are done by 5th BootCamp attendee *HaoHaoScreamAndRun*
-[Curriculum Vitae](https://haohaoscreamandrun.github.io/CV) 
+
+[Curriculum Vitae](https://haohaoscreamandrun.github.io/CV)
 
 ![Choice](./choice.jpg)
 > "我們怎麼判斷一個人活得好不好?最簡單的判斷標準是：看這個人活得有沒有選擇。" - 蔡康永《因為這是你的人生》
