@@ -91,30 +91,28 @@
 
 <body>
   <h1>Script Defer/Async Attribute Example</h1>
-  
   <div id="parent">
-  <img
-    src="https://images.pexels.com/photos/1388069/pexels-photo-1388069.jpeg?cs=srgb&dl=pexels-wildlittlethingsphoto-1388069.jpg&fm=jpg"
-    alt="">
+    <script async src="async.js"></script>
+    <img
+      src="https://images.pexels.com/photos/1388069/pexels-photo-1388069.jpeg?cs=srgb&dl=pexels-wildlittlethingsphoto-1388069.jpg&fm=jpg"
+      alt="">
   </div>
-  <script async src="async.js"></script>
-  
   <script>
-    let parent = document.getElementById("parent")
     for (let i = 0; i <= 3; i++) {
+      let parent = document.getElementById("parent")
       let p = document.createElement("p");
       p.innerText = `Inline ${i} times`;
       parent.appendChild(p);
     }
     console.log("Inline function complete")
   </script>
-
 </body>
-
 </html>
 ```
 
 ![04. Examples](/08IndeStudy/Screenshots/Topic1/04.%20Examples.png)
+
+> Async function 如果失去 async attribute會排在圖片載入之前執行
 
 ## Topic 2: CSS Selector Naming
 
@@ -129,16 +127,38 @@ OOCSS naming guideline to the CSS code in our week 1 tasks.
 
 > Data verification is a very important feature for our web system. We have a lot of small but critical work to do, both in the front-end and the back-end
 
-1. In the front-end, we have to verify input data format before sending data to the
-back-end.
-2. In the back-end, we have to receive data from the front-end and verify if it matches
-the expected format, before we use it to do any critical operations.
-3. For password format verification procedure, we want to verify if the length of
-password is between 4 ~ 8, and only includes English alphabets, numbers, and one
-of following special letters: @#$%, both in the front-end and the back-end.
-4. In a web system, why do we want to do data verification in the front-end? And why do
-we have to do data verification in the back-end even if we have done it in the
-front-end.
+1. In the front-end, we have to verify input data format before sending data to the back-end.
+2. In the back-end, we have to receive data from the front-end and verify if it matches the expected format, before we use it to do any critical operations.
+3. For password format verification procedure, we want to verify if the length of password is between 4 ~ 8, and only includes English alphabets, numbers, and one of following special letters: @#$%, both in the front-end and the back-end.
+4. In a web system, why do we want to do data verification in the front-end? And why do we have to do data verification in the back-end even if we have done it in the front-end.
+
+### Front-end AUTO validation
+
+> ```<form> 的 <input>```tag有很多可以幫助自動驗證使用者輸入的type和attributes。
+
+#### Input type
+
++ Input type - date, 使用者必須輸入包含日期的字串，無法輸入非數字文字。會出現日期選擇器幫助使用者選擇。也可以加入```max, min```控制範圍。```type="datetime-local"```則另外加入無時區的時間選擇；而```type="month"```則是出現只包含年份及月份的選擇器。
+
+   ```html
+   <input type="date" id="birthday" name="birthday" max="2024-05-01" min="1900-01-01">
+   ```
+
++ Input type - Email, 根據使用的瀏覽器不同，輸入的電郵地址可能會被自動驗證。目前測試只會驗證是否有包含```@```及前後字串。
++ Input type - File, 顯示能夠選擇及上傳檔案的按鈕。
++ Input type - Number, 只能接受數字輸入並有調整按鈕，依樣可以限制最大值及最小值。
+
+#### Input attribute
+
++ maxlength attribute, 限定輸入最大字數，但不會顯示任何警示。
++ min/max attribute, 在```type="number/range/date/datetime-local/month/time/week"```的情況下可以套用限制最大值及最小值。
++ multiple attribute, 在```type="email/file"```情況下，使用者可以輸入以逗號分隔的電子郵件或選擇兩個及以上的檔案。
++ pattern attribute, 在```type=" text/date/search/url/tel/email/password"```的情況下，以正則表達式的方式規範輸入樣態。```title=""```可以顯示不符樣態時的警告訊息。
++ required attribute, 在```type=" text/date picker/search/url/tel/email/password/number/checkbox/radio/file"```的情況下阻擋未填入送出。
+
+### Front-end Javascript validation
+
+> 上述的自動驗證都可以透過Javascript完成。
 
 ## Topic 4: Fetch and CORS
 

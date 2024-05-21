@@ -10,24 +10,20 @@
 
 <body>
   <h1>Script Defer/Async Attribute Example</h1>
-  
   <div id="parent">
-  <img
-    src="https://images.pexels.com/photos/1388069/pexels-photo-1388069.jpeg?cs=srgb&dl=pexels-wildlittlethingsphoto-1388069.jpg&fm=jpg"
-    alt="">
+    <script async src="async.js"></script>
+    <img
+      src="https://images.pexels.com/photos/1388069/pexels-photo-1388069.jpeg?cs=srgb&dl=pexels-wildlittlethingsphoto-1388069.jpg&fm=jpg"
+      alt="">
   </div>
-  <script async src="async.js"></script>
-  
   <script>
-    let parent = document.getElementById("parent")
     for (let i = 0; i <= 3; i++) {
+      let parent = document.getElementById("parent")
       let p = document.createElement("p");
       p.innerText = `Inline ${i} times`;
       parent.appendChild(p);
     }
     console.log("Inline function complete")
   </script>
-
 </body>
-
 </html>
