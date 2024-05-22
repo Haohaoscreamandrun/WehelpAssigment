@@ -141,10 +141,11 @@ OOCSS naming guideline to the CSS code in our week 1 tasks.
 + Input type - date, 使用者必須輸入包含日期的字串，無法輸入非數字文字。會出現日期選擇器幫助使用者選擇。也可以加入```max, min```控制範圍。```type="datetime-local"```則另外加入無時區的時間選擇；而```type="month"```則是出現只包含年份及月份的選擇器。
 
    ```html
-   <input type="date" id="birthday" name="birthday" max="2024-05-01" min="1900-01-01">
+    <label for="birthday">出生日期</label>
+    <input type="date" id="birthday" name="birthday" max="2024-05-01" min="1900-01-01"> <br>
    ```
 
-+ Input type - Email, 根據使用的瀏覽器不同，輸入的電郵地址可能會被自動驗證。目前測試只會驗證是否有包含```@```及前後字串。
++ Input type - Email, 根據使用的瀏覽器不同，輸入的電郵地址可能會被自動驗證。目前測試只會驗證是否有包含```@```及前後字串，如以下的正則表達式:```/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/```
 + Input type - File, 顯示能夠選擇及上傳檔案的按鈕。
 + Input type - Number, 只能接受數字輸入並有調整按鈕，依樣可以限制最大值及最小值。
 
@@ -156,9 +157,42 @@ OOCSS naming guideline to the CSS code in our week 1 tasks.
 + pattern attribute, 在```type=" text/date/search/url/tel/email/password"```的情況下，以正則表達式的方式規範輸入樣態。```title=""```可以顯示不符樣態時的警告訊息。
 + required attribute, 在```type=" text/date picker/search/url/tel/email/password/number/checkbox/radio/file"```的情況下阻擋未填入送出。
 
+#### Front-end AUTO validation of the password in point 3
+
+```html
+<form action="" onsubmit="checkPassword(event)">
+  <label for="password">密碼</label>
+  <input type="password" name="password" id="password" pattern="[a-zA-Z0-9@#$%]{4,8}" title="請輸入4-8位包含英文大小寫或@#$%符號之密碼"> <br>
+  <input type="submit" value="submit">
+</form>
+```
+
 ### Front-end Javascript validation
 
 > 上述的自動驗證都可以透過Javascript完成。
+
+#### Front-end javascript validation of the password in point 3
+
+```javascript
+function checkPassword(event){
+  event.preventDefault()
+  let password = document.getElementById('password').value
+  let pattern = new RegExp('[a-zA-Z0-9@#$%]{4,8}')
+  if (pattern.test(password)){
+    let form = document.getElementById("form")
+    form.action = "/signin"
+    form.method = "post"
+  } else {
+    alert("輸入之密碼須符合以下條件：4-8位包含英文大小寫或@#$%符號")
+  }
+}
+```
+
+### Back-end validation
+
+#### FastAPI validation of the password in point 3
+
+
 
 ## Topic 4: Fetch and CORS
 
