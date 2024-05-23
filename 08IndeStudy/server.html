@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title></title>
+</head>
+
+<body>
+  <form id="login" onsubmit="checkPassword(event)">
+    <label for="password">密碼</label>
+    <input type="password" name="password" id="password" pattern="[a-zA-Z0-9@#$%]{4,8}"  title="請輸入4-8位包含英文大小寫或@#$%符號之密碼"> <br>    
+    <input type="submit" value="submit">
+  </form>
+  <script>
+    async function checkPassword(event){
+      let password = document.getElementById('password').value
+      let pattern = new RegExp('[a-zA-Z0-9@#$%]{4,8}')
+      if (pattern.test(password)){
+        try{
+          // let form = document.getElementById("login")
+          // form.action = "/signin"
+          // form.method = "post"
+          // console.log("PASS TO BACKEND SUCCESS")
+          event.preventDefault()
+          let response = await fetch("http://127.0.0.1:8000/signin", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({'password': password})
+          })
+          let responseJSON = await response.json()
+          console.log(responseJSON)
+        } catch(e){
+          console.error(e)
+          console.log("PASS TO BACKEND FAILED")
+        }
+      } else {
+        event.preventDefault()
+        alert("輸入之密碼須符合以下條件：4-8位包含英文大小寫或@#$%符號")
+      }
+    }
+    
+  </script>
+</body>
+</html>

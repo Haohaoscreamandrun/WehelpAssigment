@@ -13,6 +13,7 @@
     <input type="password" name="password" id="password" pattern="[a-zA-Z0-9@#$%]{4,8}"  title="請輸入4-8位包含英文大小寫或@#$%符號之密碼"> <br>    
     <input type="submit" value="submit">
   </form>
+  <button id="CORS" onclick="CORS(event)">CORS</button>
   <script>
     async function checkPassword(event){
       let password = document.getElementById('password').value
@@ -42,6 +43,22 @@
         alert("輸入之密碼須符合以下條件：4-8位包含英文大小寫或@#$%符號")
       }
     }
+    async function CORS(event){
+      try {
+        let response = await fetch("http://127.0.0.2:9000",{
+          method: "GET",
+        });
+      if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+      let text = await response.json();
+      console.log("Response Text:", text);
+      } catch (error){
+        console.error('There was a problem with the fetch operation:', error);
+      }
+    }
+    
+
   </script>
 </body>
 </html>

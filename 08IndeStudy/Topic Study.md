@@ -202,7 +202,7 @@ from pydantic import BaseModel, field_validator
 from pydantic_core.core_schema import FieldValidationInfo
 import os, re
 app = FastAPI()
-@app.get("/")
+@app.get("/") #直接把首頁mount成static檔案雖然可以讀取，但打不出POST request，待研究
 def root():
    # Get the directory of the current file
     current_dir = os.path.dirname(os.path.realpath(__file__))
@@ -250,6 +250,124 @@ async def validation(request: Request, password: Userdata):
 and get a response? Compared to the previous case, what’s the difference?
 4. How to share APIs we developed to other domains, just like what we experienced in
 step 3. Could you give us an example?
+
+### 跨站請求偽造 Cross Site Request Forgery, CSRF
+
++ 原本的伺服器是無條件相信cookie的資料，而沒有再進行驗證。
++ 跨站請求偽造步驟：
+  1. 使用者登入合法網站，合法網站發出cookie存至使用者瀏覽器。
+  2. 使用者在未登出的情況下，以其他分頁瀏覽惡意網站。
+  3. 惡意網站同樣可以使用瀏覽器中的cookie，該惡意網站以該cookie向合法網站發送請求。
+
+### 同源政策 Same Origin Policy
+
++ 現存所有瀏覽器皆實作同源政策以防止跨站請求偽造。
++ Client-side只能向相同來源的資源發送request，相同來源的定義為：
+  1. 相同通訊協定(Same Protocol)
+  2. 相同網域(Same Domain)
+  3. 相同通訊埠(Same Port)
++ 只要請求發送的網域不符合上述規則，瀏覽器CORS會報錯
+
+以目前的使用者URL```http://127.0.0.1:8000/```來說：
+
+```javascript
+1. 'https://127.0.0.1:8000/' //通訊協定不同
+2. 'http://example.com:8000/' //網域不同
+3. 'http://127.0.0.1:5000/' //通訊埠不同
+```
+
+### 跨來源資源共用 Cross-Origin Resource Sharing, CORS
+
++ 實務上不可能避免請求非同源資源，例如從影片平台API提取影片、使用公共字型庫或顯示全國氣象資料等。
++ 為了請求非同源的資源，瀏覽器必須要在```headers```中放入CORS安全列表請求標頭。
+  + 其中```Origin: 當前URL```可告知請求來源。
++ 伺服器收到後，在```response```的```headers```中```Access-Control-Allow-Origin```加上當前url。
+  + 開發人員首先在其伺服器上設定CORS標頭，方法是將該url新增到允許的來源清單。
+
+  ```plaintext
+  組態清單
+  Access-Control-Allow-Origin: https://news.example.com
+  ```
+
+  + 對於之後每個請求，伺服器將以```Access-Control-Allow-Credentials : "true"```進行回應。
++ 除```GET, HEAD, POST```三個簡單請求之外，瀏覽器會先發送一次請求、稱預檢請求(Preflighted request)。
+  + 因源政策只會擋回應，不會擋請求，所以假如某個惡意攻擊者發送```DELETE```的請求，同源政策不會擋下這個請求。
+  + 預檢請求的方法是```OPTIONS```，一旦預檢請求成功完成，真正的請求才會被送出。
+  + 伺服器在回應預檢請求時，可以在 ```Access-Control-Max-Age``` 標頭帶上預檢請求回應快取的秒數，也就是說，在這個秒數之內，預檢請求會被快取，在該秒數內不需要再額外發送預檢。
+
+### 實作
+
+#### 是否可以從Local host執行跨域請求?
+
+##### Request from Google
+
+> 會獲得CORS報錯，截圖如下：
+![01. CORS error screenshot](/08IndeStudy/Screenshots/Topic4/01.%20CORS%20error%20screenshot.png)
+![04. Failed fetch response header](/08IndeStudy/Screenshots/Topic4/04.%20Failed%20fetch%20response%20header.png)
+
+##### Request from Padax JSON
+
+> 成功取得JSON，截圖如下：
+![02. Success retrieve of json](/08IndeStudy/Screenshots/Topic4/02.%20Success%20retrieve%20of%20json.png)
+![03. Success fetch response header](/08IndeStudy/Screenshots/Topic4/03.%20Success%20fetch%20response%20header.png)
+
+##### Difference between 2 respond
+
+1. Padax的回應標頭中，```Access-Control-Allow-Origin: *```萬用字符代表該資源可以被任何來源存取。
+2. Padax的回應標頭中，沒有```Access-Control-Allow-Credentials : "true"```可能是因為```Access-Control-Allow-Origin: *```並未單獨列出請求網址。
+3. Google回應標頭中並沒有出現任何```Access-Control```相關的內容，且根據CORS錯誤訊息，```Access-Control-Allow-Origin```並沒有在標頭中。
+
+##### Shared APIs to other domains
+
+1. Set up a server by FastAPI host on 127.0.0.2:9000.
+2. Set up another server on 127.0.0.1:8000 as a client.
+3. Mount a CORS middleware on server:
+
+    ```py
+    from fastapi.middleware.cors import CORSMiddleware
+    from fastapi import FastAPI, Form, Request
+    from fastapi.responses import FileResponse
+    import os
+    app = FastAPI()
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["http://127.0.0.1:8000"],
+        allow_credentials=True,
+        allow_methods=["GET"],
+        allow_headers=["*"],
+    )
+    @app.get("/")
+    def root():
+      # Get the directory of the current file
+        current_dir = os.path.dirname(os.path.realpath(__file__))
+        # Construct the file path to index.html
+        index_html_path = os.path.join(current_dir, "server.html")
+        # Return the index.html file as a response
+        return FileResponse(index_html_path)
+    ```
+
+4. ```fetch``` from client to server as a cross origin request.
+
+    ```javascript
+    async function CORS(event){
+          try {
+            let response = await fetch("http://127.0.0.2:9000",{
+              method: "GET",
+            });
+          if (!response.ok) {
+              throw new Error('Network response was not ok');
+            }
+          let text = await response.json();
+          console.log("Response Text:", text);
+          } catch (error){
+            console.error('There was a problem with the fetch operation:', error);
+          }
+        }
+    ```
+
+5. Success sharing API to other domains
+
+![05. Success sharing APIs with CORSmiddleware](/08IndeStudy/Screenshots/Topic4/05.%20Success%20sharing%20APIs%20with%20CORSmiddleware.png)
 
 ## Topic 5: Primary Key and Index
 
