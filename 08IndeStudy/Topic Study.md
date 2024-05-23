@@ -384,24 +384,32 @@ step 3. Could you give us an example?
 
 ### How to test the speed of execution
 
-  ```python
-  timer_start = time.time()
-  sql = "SELECT username, password\
-          FROM member\
-          WHERE username = 'test'\
-          AND password= 'test'"
-  mycursor.execute(sql)
-  myresult = mycursor.fetchall()
-  for x in myresult:
-    print(x)
-  timer_end = time.time()
-  print('The SQL process took about', (timer_end - timer_start)*1000, 'milliseconds')
-  ```
+1. From python
+
+    ```python
+    timer_start = time.time()
+    sql = "SELECT username, password\
+            FROM member\
+            WHERE username = 'test'\
+            AND password= 'test'"
+    mycursor.execute(sql)
+    myresult = mycursor.fetchall()
+    for x in myresult:
+      print(x)
+    timer_end = time.time()
+    print('The SQL process took about', (timer_end - timer_start)*1000, 'milliseconds')
+    ```
+
+2. From MySQL
+
+    ```sql
+    EXPLAIN ANALYZE SELECT * FROM member WHERE username='test' and password='test';
+    ```
 
 ### Difference of setting up index
 
 1. 在50萬行資訊的資料量下，沒有設置任何index的查詢速度：
-    > 此時表格的大小約佔```48.1MB```, ```index length```為```0.0MB```
+    > 此時表格的大小約佔```33.6MB```, ```index length```為```0.0MB```
 
     ```shell
     [Running] python -u "c:\Users\J8426\Wehelp\WehelpAssignment\08IndeStudy\SQL.py"
@@ -409,8 +417,20 @@ step 3. Could you give us an example?
     The SQL process took about 86.19070053100586 milliseconds
     ```
 
+    ```plaintext
+    # EXPLAIN
+
+    -> Filter: ((`member`.`password` = \'test\') and (`member`.username = \'test\'))  (cost=50348 rows=4981) (actual time=0.0427..121 rows=1 loops=1)
+    # The actual execution time for this filter operation is between 0.0427 and 121 milliseconds.
+
+    -> Table scan on member  (cost=50348 rows=498108) (actual time=0.038..97.2 rows=500007 loops=1)
+    # The actual execution time for this index lookup is between 0.038 and 97.2 milliseconds.
+
+    # In total: 0.0807 to 218.2 milliseconds.
+    ```
+
 2. 在username上設置index，及設置後的查詢速度
-    > 此時表格的大小約佔```33.6MB```, ```index length```為```14.5MB```
+    > 此時表格的大小約佔```48.1MB```, ```index length```為```14.5MB```
 
     ```sql
     CREATE INDEX username ON member (username);
@@ -420,6 +440,18 @@ step 3. Could you give us an example?
     [Running] python -u "c:\Users\J8426\Wehelp\WehelpAssignment\08IndeStudy\SQL.py"
     ('test', 'test')
     The SQL process took about 0.3943443298339844 milliseconds
+    ```
+
+    ```plaintext
+    # EXPLAIN
+
+    -> Filter: (`member`.`password` = 'test')  (cost=0.26 rows=0.1) (actual time=0.0265..0.0279 rows=1 loops=1)
+    # The actual execution time for this filter operation is between 0.0265 and 0.0279 milliseconds.
+    
+    -> Index lookup on member using username (username='test')  (cost=0.26 rows=1) (actual time=0.0242..0.0255 rows=1 loops=1)
+    # The actual execution time for this index lookup is between 0.0242 and 0.0255 milliseconds.
+
+    # In total: 0.0507 to 0.0534 milliseconds.
     ```
 
 3. 在username和password上設置複合index，及設置後的查詢速度
@@ -435,6 +467,18 @@ step 3. Could you give us an example?
     ('test', 'test')
     The SQL process took about 0.9963512420654297 milliseconds
     ```
+
+    ```plaintext
+    # EXPLAIN
+
+    -> Index lookup on member using username_password (username='test', password='test')  (cost=0.35 rows=1) (actual time=0.0214..0.0226 rows=1 loops=1)
+    # The actual execution time for this index lookup is between 0.0214 and 0.0226 milliseconds.
+
+    # In total: 0.0214 to 0.0226 milliseconds.
+    ```
+
+4. 比較結果
+    > 在這個資料下，複合式索引的加速效果並不顯著，但卻需要很多空間(約原資料量的2/3)。
 
 ## Topic 6: Connection Pool
 
