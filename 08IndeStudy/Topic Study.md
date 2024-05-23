@@ -380,6 +380,62 @@ step 3. Could you give us an example?
 4. Why can Index significantly speed up query?
 5. Can Index speed up SQL query using the LIKE feature?
 
+### Primary key & Index
+
+### How to test the speed of execution
+
+  ```python
+  timer_start = time.time()
+  sql = "SELECT username, password\
+          FROM member\
+          WHERE username = 'test'\
+          AND password= 'test'"
+  mycursor.execute(sql)
+  myresult = mycursor.fetchall()
+  for x in myresult:
+    print(x)
+  timer_end = time.time()
+  print('The SQL process took about', (timer_end - timer_start)*1000, 'milliseconds')
+  ```
+
+### Difference of setting up index
+
+1. 在50萬行資訊的資料量下，沒有設置任何index的查詢速度：
+    > 此時表格的大小約佔```48.1MB```, ```index length```為```0.0MB```
+
+    ```shell
+    [Running] python -u "c:\Users\J8426\Wehelp\WehelpAssignment\08IndeStudy\SQL.py"
+    ('test', 'test')
+    The SQL process took about 86.19070053100586 milliseconds
+    ```
+
+2. 在username上設置index，及設置後的查詢速度
+    > 此時表格的大小約佔```33.6MB```, ```index length```為```14.5MB```
+
+    ```sql
+    CREATE INDEX username ON member (username);
+    ```
+
+    ```shell
+    [Running] python -u "c:\Users\J8426\Wehelp\WehelpAssignment\08IndeStudy\SQL.py"
+    ('test', 'test')
+    The SQL process took about 0.3943443298339844 milliseconds
+    ```
+
+3. 在username和password上設置複合index，及設置後的查詢速度
+    > 此時表格的大小約佔```56.1MB```, ```index length```為```22.6MB```
+
+    ```sql
+    ALTER TABLE member DROP INDEX username;
+    CREATE INDEX username_password ON member (username, password);
+    ```
+
+    ```shell
+    [Running] python -u "c:\Users\J8426\Wehelp\WehelpAssignment\08IndeStudy\SQL.py"
+    ('test', 'test')
+    The SQL process took about 0.9963512420654297 milliseconds
+    ```
+
 ## Topic 6: Connection Pool
 
 > The standard procedure to work with databases is: connect, execute SQL statements, and
