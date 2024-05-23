@@ -302,14 +302,14 @@ step 3. Could you give us an example?
 ##### Request from Google
 
 > 會獲得CORS報錯，截圖如下：
-![01. CORS error screenshot](/08IndeStudy/Screenshots/Topic4/01.%20CORS%20error%20screenshot.png)
-![04. Failed fetch response header](/08IndeStudy/Screenshots/Topic4/04.%20Failed%20fetch%20response%20header.png)
+  ![01. CORS error screenshot](/08IndeStudy/Screenshots/Topic4/01.%20CORS%20error%20screenshot.png)
+  ![04. Failed fetch response header](/08IndeStudy/Screenshots/Topic4/04.%20Failed%20fetch%20response%20header.png)
 
 ##### Request from Padax JSON
 
 > 成功取得JSON，截圖如下：
-![02. Success retrieve of json](/08IndeStudy/Screenshots/Topic4/02.%20Success%20retrieve%20of%20json.png)
-![03. Success fetch response header](/08IndeStudy/Screenshots/Topic4/03.%20Success%20fetch%20response%20header.png)
+  ![02. Success retrieve of json](/08IndeStudy/Screenshots/Topic4/02.%20Success%20retrieve%20of%20json.png)
+  ![03. Success fetch response header](/08IndeStudy/Screenshots/Topic4/03.%20Success%20fetch%20response%20header.png)
 
 ##### Difference between 2 respond
 
@@ -367,7 +367,7 @@ step 3. Could you give us an example?
 
 5. Success sharing API to other domains
 
-![05. Success sharing APIs with CORSmiddleware](/08IndeStudy/Screenshots/Topic4/05.%20Success%20sharing%20APIs%20with%20CORSmiddleware.png)
+    ![05. Success sharing APIs with CORSmiddleware](/08IndeStudy/Screenshots/Topic4/05.%20Success%20sharing%20APIs%20with%20CORSmiddleware.png)
 
 ## Topic 5: Primary Key and Index
 
