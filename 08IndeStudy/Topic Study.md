@@ -392,6 +392,7 @@ step 3. Could you give us an example?
     + 沒有索引時，MySQL在每次查詢時都會從第一列開始讀取查詢直到最後一列。
     + 索引是一種分離於資料TABLE的資料庫的結構，複製一部分資料TABLE，並且可以對應回原本的資料TABLE ROW
     > leaf node同時儲存對應的```primary key```，回到```primary key```再執行一次```B+ trees```搜尋以找到其他Raw data。
+    ![02. Secondary key pointer](/08IndeStudy/Screenshots/Topic5/02.%20Secondary%20key%20pointer.png)
     + 與資料庫如何被搜尋有關，創建索引要看應用程式是如何打出Queries。
     + MySQL索引大部分是採用```B+ trees```建立，因此在搜尋時可以跳過許多資料。
       + 如下圖，要在姓名欄位中搜尋Suzanne時，從root開始比較字母順序，大於或等於時往右。
