@@ -513,6 +513,7 @@ step 3. Could you give us an example?
 
     ```sql
     CREATE INDEX username ON member (username);
+    EXPLAIN ANALYZE SELECT * FROM member WHERE username like '%st' and password like '%st';
     ```
 
     ```plaintext
