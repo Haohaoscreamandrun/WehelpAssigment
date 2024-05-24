@@ -382,6 +382,22 @@ step 3. Could you give us an example?
 
 ### Primary key & Index
 
+1. ```Primary key```:
+    + 欄位不能包含任何null值，且必須各自是唯一值
+    + 他可以是已經存在的資料欄位，或是由資料庫自動生成，但一份表格中僅能有一欄
+    + ```Primary key```作為```primary index```，與其他之後建立的```secondary key/index```不同，在```B+ trees```的尾端都包含每一列資料的所有Raw data，也可以說就是表格本身，也代表表格是如何被儲存的。
+    + 此constraint在已經連結至其他表格時(作為其他表格的Foreign key)無法被刪除(drop)。
+      + Constraint：保證資料的完整性，Child Table 不能放 Parent Table 沒有的東西；刪除 Parent Table 的資料時，確保 Child Table 對應的資料要先被刪除。
+2. ```Index```:
+    + 沒有索引時，MySQL在每次查詢時都會從第一列開始讀取查詢直到最後一列。
+    + 索引是一種分離於資料TABLE的資料庫的結構，複製一部分資料TABLE，並且可以對應回原本的資料TABLE ROW(leaf node同時儲存對應的```primary key```，回到```primary key```再執行一次```B+ trees```搜尋以找到其他Raw data)。
+    + 與資料庫如何被搜尋有關，創建索引要看應用程式是如何打出Queries。
+    + MySQL索引大部分是採用```B+ trees```建立，因此在搜尋時可以跳過許多資料。
+      + 如下圖，要在姓名欄位中搜尋Suzanne時，從root開始比較字母順序，大於或等於時往右。
+      ![01. B+trees](/08IndeStudy/Screenshots/Topic5/01.%20B+trees.png)
+    + 目的是在犧牲容量和寫入速度的同時，增加尋回資料的速度。
+    + 若索引欄位被呼叫，MySQL可以從這個更小的範圍裡去搜尋，以節省時間。
+
 ### How to test the speed of execution
 
 1. From python
@@ -479,6 +495,53 @@ step 3. Could you give us an example?
 
 4. 比較結果
     > 在這個資料下，複合式索引的加速效果並不顯著，但卻需要很多空間(約原資料量的2/3)。
+
+### Wildcard search speeding up: Fulltext index?
+
+1. 一般的```B+ trees```index在遇到wildcard搜尋時，若```%```符號放在最前面(也就是字串前端隨意)，index會失去作用。(可以理解，在一開始就沒有比較的基準可以走```B+ trees```)
+
+    ```sql
+    EXPLAIN ANALYZE SELECT * FROM member WHERE username like '%st' and password like '%st';
+    ```
+
+    ```plaintext
+    # EXPLAIN
+    -> Filter: ((`member`.`password` = '%st') and (`member`.username like '%st'))  (cost=50638 rows=5566) (actual time=118..118 rows=0 loops=1)
+    -> Table scan on member  (cost=50638 rows=501009) (actual time=0.0589..95.9 rows=500007 loops=1)
+    ```
+
+    ```sql
+    CREATE INDEX username ON member (username);
+    ```
+
+    ```plaintext
+    # EXPLAIN
+    -> Filter: ((`member`.`password` = '%st') and (`member`.username like '%st'))  (cost=50638 rows=5566) (actual time=116..116 rows=0 loops=1)
+    -> Table scan on member  (cost=50638 rows=501009) (actual time=0.0278..94.3 rows=500007 loops=1)
+    ```
+
+2. Fulltext index 也許可以做為替代解法
+
+    > Full text indexes allow us to search for specific words or phrases within a larger text column with much greater efficiency than using a simple wildcard search.
+    > While LIKE works on a string of characters and can perform arbitrary wildcard matches against anything inside the target, by design fulltext operates upon whole words/terms only.
+
+    + 創建fulltext index
+
+    ```sql
+    ALTER TABLE member ADD FULLTEXT INDEX `fulindex` (username, password);  
+    ```
+
+    + 使用```MATCH/AGAINST```(by design fulltext operates upon whole words/terms only)
+
+    ```sql
+    SELECT * FROM member WHERE MATCH (username, password) AGAINST ('test'); 
+    ```
+
+    ```plaintext
+    # EXPLAIN
+    -> Filter: (match `member`.username,`member`.`password` against ('test'))  (cost=1.1 rows=1) (actual time=0.0168..0.017 rows=1 loops=1)
+    -> Full-text index search on member using fulindex (username='test')  (cost=1.1 rows=1) (actual time=0.0158..0.016 rows=1 loops=1)
+    ```
 
 ## Topic 6: Connection Pool
 
